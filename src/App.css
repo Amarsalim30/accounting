@@ -2,7 +2,68 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
+}
+
+.App {
   text-align: center;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding: 1rem;
+}
+
+.invoice-list table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.invoice-list th, .invoice-list td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.invoice-list th {
+  background-color: #f4f4f4;
+}
+
+.error {
+  color: #dc3545;
+  padding: 1rem;
+  margin: 1rem 0;
+  border: 1px solid #dc3545;
+  border-radius: 4px;
+}
+
+form {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
 }
 
 .logo {

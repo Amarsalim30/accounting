@@ -1,13 +1,22 @@
 import React from 'react'
 import InvoiceForm from './components/InvoiceForm'
+import InvoiceList from './components/InvoiceList'
+import './App.css'
 
 function App() {
   return (
-    <div className="App" style={{ padding: '2rem', fontFamily: 'Arial, sans-serif' }}>
+    <div className="App">
       <header>
-        <h2>Accounting Module - Invoice Creation</h2>
+        <h1>Accounting Module</h1>
       </header>
-      <InvoiceForm />
+      <main className="content">
+        <div className="form-section">
+          <InvoiceForm />
+        </div>
+        <div className="list-section">
+          <InvoiceList />
+        </div>
+      </main>
     </div>
   )
 }

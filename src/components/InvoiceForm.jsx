@@ -1,16 +1,17 @@
 import React, { useState } from 'react'
-import axios from 'axios'
+import { createInvoice } from '../api/Invoice'
 
 const InvoiceForm = () => {
   const [invoiceNumber, setInvoiceNumber] = useState('')
   const [subtotal, setSubtotal] = useState('')
   const [taxRate, setTaxRate] = useState('')
   const [message, setMessage] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setIsLoading(true)
 
-    // Build the payload
     const payload = {
       invoiceNumber,
       subtotal: parseFloat(subtotal),
@@ -18,17 +19,16 @@ const InvoiceForm = () => {
     }
 
     try {
-      // Adjust the URL if your Spring Boot service runs on a different host/port
-      await axios.post('http://localhost:8080/api/invoices', payload)
+      await createInvoice(payload)
       setMessage('Invoice created successfully!')
       setInvoiceNumber('')
       setSubtotal('')
       setTaxRate('')
     } catch (error) {
-      const errorMsg = error.response && error.response.data && error.response.data.message 
-        ? error.response.data.message 
-        : 'Error creating invoice'
+      const errorMsg = error.response?.data?.message || 'Error creating invoice'
       setMessage(`Error: ${errorMsg}`)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -65,9 +65,11 @@ const InvoiceForm = () => {
             required
           />
         </div>
-        <button type="submit" style={{ padding: '0.5rem', fontSize: '1rem' }}>Create Invoice</button>
+        <button type="submit" disabled={isLoading} style={{ padding: '0.5rem', fontSize: '1rem' }}>
+          {isLoading ? 'Creating...' : 'Create Invoice'}
+        </button>
       </form>
-      {message && <p style={{ marginTop: '1rem' }}>{message}</p>}
+      {message && <p style={{ marginTop: '1rem' }} className={message.includes('Error') ? 'error' : 'success'}>{message}</p>}
     </div>
   )
 }
