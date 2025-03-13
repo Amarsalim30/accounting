@@ -101,3 +101,31 @@ button:hover {
 .read-the-docs {
   color: #888;
 }
+
+@media (max-width: 768px) {
+  .content {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 0.5rem;
+  }
+
+  #root {
+    padding: 1rem;
+  }
+
+  form {
+    padding: 1rem;
+  }
+
+  .invoice-list {
+    overflow-x: auto;
+  }
+
+  .invoice-list table {
+    font-size: 0.9rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+}
