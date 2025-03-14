@@ -1,11 +1,25 @@
 import axios from 'axios'
 
-const API_URL = 'http://localhost:8080/api'
+// Use relative path when using Vite proxy
+const API_URL = '/api'
+
+const axiosInstance = axios.create({
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+    // Add any auth headers here
+  },
+  withCredentials: true // Required for CORS with credentials
+})
 
 export const createInvoice = (invoiceData) => {
-  return axios.post(`${API_URL}/invoices`, invoiceData)
+  return axiosInstance.post('/invoices', {
+    invoiceNumber: invoiceData.invoiceNumber,
+    subtotal: parseFloat(invoiceData.subtotal),
+    taxRate: parseFloat(invoiceData.taxRate) / 100
+  })
 }
 
 export const getInvoices = () => {
-  return axios.get(`${API_URL}/invoices`)
+  return axiosInstance.get('/invoices')
 }

@@ -1,9 +1,15 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import InvoiceForm from './components/InvoiceForm'
 import InvoiceList from './components/InvoiceList'
 import './App.css'
 
 function App() {
+  const invoiceListRef = useRef()
+
+  const handleInvoiceCreated = () => {
+    invoiceListRef.current?.loadInvoices()
+  }
+
   return (
     <div className="App">
       <header>
@@ -11,10 +17,10 @@ function App() {
       </header>
       <main className="content">
         <div className="form-section">
-          <InvoiceForm />
+          <InvoiceForm onSuccess={handleInvoiceCreated} />
         </div>
         <div className="list-section">
-          <InvoiceList />
+          <InvoiceList ref={invoiceListRef} />
         </div>
       </main>
     </div>

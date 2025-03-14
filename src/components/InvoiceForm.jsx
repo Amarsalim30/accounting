@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { createInvoice } from '../api/Invoice'
+import PropTypes from 'prop-types'
+import './InvoiceForm.css'
 
-const InvoiceForm = () => {
+const InvoiceForm = ({ onSuccess }) => {
   const [invoiceNumber, setInvoiceNumber] = useState('')
   const [subtotal, setSubtotal] = useState('')
   const [taxRate, setTaxRate] = useState('')
@@ -11,21 +13,28 @@ const InvoiceForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsLoading(true)
-
-    const payload = {
-      invoiceNumber,
-      subtotal: parseFloat(subtotal),
-      taxRate: parseFloat(taxRate)
-    }
+    setMessage('')
 
     try {
-      await createInvoice(payload)
+      await createInvoice({
+        invoiceNumber,
+        subtotal,
+        taxRate
+      })
       setMessage('Invoice created successfully!')
       setInvoiceNumber('')
       setSubtotal('')
       setTaxRate('')
+      
+      // Call parent's onSuccess callback
+      if (typeof onSuccess === 'function') {
+        onSuccess()
+      }
     } catch (error) {
-      const errorMsg = error.response?.data?.message || 'Error creating invoice'
+      console.error('Error creating invoice:', error)
+      const errorMsg = error.response?.data?.message || 
+                      error.response?.data?.error ||
+                      'Error creating invoice'
       setMessage(`Error: ${errorMsg}`)
     } finally {
       setIsLoading(false)
@@ -33,11 +42,11 @@ const InvoiceForm = () => {
   }
 
   return (
-    <div style={{ marginTop: '1rem' }}>
+    <div className="invoice-form">
       <h3>Create Invoice</h3>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '400px' }}>
-        <div>
-          <label>Invoice Number: </label>
+      <form onSubmit={handleSubmit}>
+        <div className="form-row">
+          <label>Invoice Number:</label>
           <input
             type="text"
             value={invoiceNumber}
@@ -45,33 +54,40 @@ const InvoiceForm = () => {
             required
           />
         </div>
-        <div>
-          <label>Subtotal: </label>
+        <div className="form-row">
+          <label>Subtotal ($):</label>
           <input
             type="number"
+            min="0"
             step="0.01"
             value={subtotal}
             onChange={(e) => setSubtotal(e.target.value)}
             required
           />
         </div>
-        <div>
-          <label>Tax Rate: </label>
+        <div className="form-row">
+          <label>Tax Rate (%):</label>
           <input
             type="number"
-            step="0.01"
+            min="0"
+            max="100"
+            step="0.1"
             value={taxRate}
             onChange={(e) => setTaxRate(e.target.value)}
             required
           />
         </div>
-        <button type="submit" disabled={isLoading} style={{ padding: '0.5rem', fontSize: '1rem' }}>
+        <button type="submit" className="submit-button" disabled={isLoading}>
           {isLoading ? 'Creating...' : 'Create Invoice'}
         </button>
+        {message && <div className={`message ${message.includes('Error') ? 'error' : 'success'}`}>{message}</div>}
       </form>
-      {message && <p style={{ marginTop: '1rem' }} className={message.includes('Error') ? 'error' : 'success'}>{message}</p>}
     </div>
   )
+}
+
+InvoiceForm.propTypes = {
+  onSuccess: PropTypes.func
 }
 
 export default InvoiceForm
